@@ -114,6 +114,11 @@ size_t get_paged_size( size_t size );
  *         allocation failure error.
  */
 void *realloc_mem( const void *mem, size_t size );
+
+// A wrapper for alloc_mem that checks for overflow before proper allocation
 void *alloc_array( size_t item_count, size_t item_size );
+
+// A wrapper for realloc_mem that checks for overflow before proper allocation
+void *realloc_array( const void *mem, size_t item_count, size_t item_size );
 
 #endif /* __STUMPLESS_PRIVATE_MEMORY_H */
