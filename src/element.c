@@ -56,18 +56,13 @@ struct stumpless_element *
 stumpless_add_param( struct stumpless_element *element,
                      struct stumpless_param *param ) {
   struct stumpless_param **new_params;
-  size_t old_params_size;
-  size_t new_params_size;
 
   VALIDATE_ARG_NOT_NULL( element );
   VALIDATE_ARG_NOT_NULL( param );
 
   lock_element( element );
 
-  old_params_size = sizeof( param ) * element->param_count;
-  new_params_size = old_params_size + sizeof( param );
-
-  new_params = realloc_mem( element->params, new_params_size );
+  new_params = realloc_array( element->params, element->param_count + 1, sizeof( struct stumpless_param * ) );
   if( !new_params ) {
     unlock_element( element );
     return NULL;
