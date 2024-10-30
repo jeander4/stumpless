@@ -20,6 +20,7 @@
 #  define __STUMPLESS_TEST_HELPER_FIXTURE_HPP
 
 #  include <cstdlib>
+#  include <dirent.h>
 #  include <gtest/gtest.h>
 #  include <string>
 #  include <stumpless.h>

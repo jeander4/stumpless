@@ -20,7 +20,6 @@
 #include <fstream>
 #include <string>
 #include <stumpless.h>
-#include <dirent.h>
 #include "test/config.hpp"
 #include "test/helper/fixture.hpp"
 
