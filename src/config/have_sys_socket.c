@@ -204,7 +204,7 @@ sys_socket_sendto_tcp_target( struct network_target *target,
     send_result = send( target->handle,
                         msg,
                         msg_size - sent_bytes,
-                        MSG_NOSIGNAL );
+                        config_disallow_signal_during_sending_flag );
 
     if( unlikely( send_result == -1 ) ){
       raise_socket_send_failure( L10N_SEND_SYS_SOCKET_FAILED_ERROR_MESSAGE,
@@ -231,7 +231,7 @@ sys_socket_sendto_udp_target( const struct network_target *target,
   send_result = send( target->handle,
                       msg,
                       msg_size,
-                      MSG_NOSIGNAL );
+                      config_disallow_signal_during_sending_flag );
 
   if( unlikely( send_result == -1 ) ){
     unlock_network_target( target );

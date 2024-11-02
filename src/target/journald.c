@@ -191,7 +191,7 @@ void
 init_fields( size_t field_count ) {
   struct iovec *new_fields;
 
-  new_fields = realloc_mem( fields, sizeof( *fields ) * field_count );
+  new_fields = realloc_array( fields, field_count, sizeof( *fields ) );
   if( !new_fields ) {
     return;
   }
