@@ -16,6 +16,10 @@
  * limitations under the License.
  */
 
+#ifndef HAVE_WINDOWS_H
+  #include <dirent.h>
+#endif
+
 #include <cstddef>
 #include <fstream>
 #include <string>
@@ -90,29 +94,62 @@ load_corpus( const string& name ) {
 }
 
 stumpless_test_data
-load_corpus_folder( const string& name){
+load_corpus_folder( const char* name ) {
+    char** test_strings = NULL;
+    int fileIndex = 0;
 
-  DIR *dir;
-  struct dirent *ent;
-  string corpora_dir ( FUZZ_CORPORA_DIR );
-  int fileIndex = 0;
+#if defined(HAVE_WINDOWS_H)
+    // Windows directory traversal
+    char corpora_dir[MAX_PATH];
+    snprintf( corpora_dir, sizeof( corpora_dir ), "%s\\%s\\*", FUZZ_CORPORA_DIR, name );
 
-  char **test_strings;
-  if((dir = opendir((corpora_dir + "/" + name).c_str())) != NULL){
-    while((ent = readdir(dir)) != NULL){
-      const char *test_string = load_corpus(name + "/" + ent->d_name);
-      if(test_string != NULL){
-        if(fileIndex > 0){
-          test_strings = (char **) realloc(test_strings, sizeof(char *) * (fileIndex + 1));
-        }
-        else{
-          test_strings = (char **) malloc(sizeof(char *));
-        }
-        test_strings[fileIndex] = (char *)test_string;
-        ++fileIndex;
-      }
+    WIN32_FIND_DATA findFileData;
+    HANDLE hFind = FindFirstFile( corpora_dir, &findFileData );
+
+    if ( hFind != INVALID_HANDLE_VALUE ) {
+        do {
+            if ( !( findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ) ) {
+                char filePath[MAX_PATH];
+                snprintf( filePath, MAX_PATH, "%s\\%s\\%s", FUZZ_CORPORA_DIR, name, findFileData.cFileName );
+
+                const char* test_string = load_corpus( filePath );
+                if (test_string != NULL) {
+                    test_strings = (char**) realloc( test_strings, sizeof(char*) * ( fileIndex + 1 ) ) ;
+                    test_strings[fileIndex] = (char*) test_string;
+                    ++fileIndex;
+                }
+            }
+        } while ( FindNextFile( hFind, &findFileData ) != 0 );
+        FindClose(hFind);
     }
-    closedir(dir);
-  }
-  return {fileIndex, test_strings};
+
+#else
+    // POSIX (macOS Unix/Linux) directory traversal
+    char corpora_dir[PATH_MAX];
+    snprintf( corpora_dir, sizeof( corpora_dir ), "%s/%s", FUZZ_CORPORA_DIR, name );
+
+    DIR* dir = opendir( corpora_dir );
+    dirent* ent;
+    if (dir != NULL) {
+        while ( ( ent = readdir(dir) ) != NULL ) {
+            if ( ent->d_type == DT_REG ) {  // Only process regular files
+                char filePath[1024];
+                snprintf( filePath, sizeof(filePath), "%s/%s", corpora_dir, ent->d_name );
+
+                const char* test_string = load_corpus( filePath );
+                if ( test_string != NULL ) {
+                    test_strings = (char**) realloc( test_strings, sizeof(char*) * ( fileIndex + 1 ) );
+                    test_strings[fileIndex] = (char*) test_string;
+                    ++fileIndex;
+                }
+            }
+        }
+        closedir( dir );
+    }
+#endif
+
+    stumpless_test_data result;
+    result.length = fileIndex;
+    result.test_strings = test_strings;
+    return result;
 }

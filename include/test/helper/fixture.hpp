@@ -20,7 +20,6 @@
 #  define __STUMPLESS_TEST_HELPER_FIXTURE_HPP
 
 #  include <cstdlib>
-#  include <dirent.h>
 #  include <gtest/gtest.h>
 #  include <string>
 #  include <stumpless.h>
@@ -107,6 +106,6 @@ struct stumpless_test_data {
  * directory as an array and corresponding size stored as length.
  */
 stumpless_test_data
-load_corpus_folder( const std::string& name );
+load_corpus_folder( const char* name );
 
 #endif /* __STUMPLESS_TEST_HELPER_FIXTURE_HPP */
