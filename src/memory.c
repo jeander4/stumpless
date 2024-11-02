@@ -136,6 +136,15 @@ alloc_array( size_t item_count, size_t item_size ) {
   return alloc_mem(item_count * item_size);
 }
 
+void *
+realloc_array( const void *mem, size_t item_count, size_t item_size ) {
+  if (item_count && item_count >= (size_t)-1/item_size) {
+    raise_memory_allocation_failure();
+    return NULL;
+  }
+  return realloc_mem(mem, item_count * item_size);
+}
+
 malloc_func_t stumpless_get_malloc(void) {
     return stumpless_malloc ? stumpless_malloc : NULL;
 }

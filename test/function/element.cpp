@@ -607,6 +607,23 @@ namespace {
     EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
   }
 
+  TEST_F( ElementTest, HighParamCount ) {
+    size_t original_param_count;
+    const struct stumpless_element *result;
+
+    original_param_count = stumpless_get_param_count( basic_element );
+    basic_element->param_count = SIZE_MAX - 1;
+
+    result = stumpless_add_new_param( basic_element, "high-param-count-name", "high-param-count-value" );
+    EXPECT_NULL( result );
+
+    EXPECT_ERROR_ID_EQ( STUMPLESS_MEMORY_ALLOCATION_FAILURE );
+
+    basic_element->param_count = original_param_count;
+    EXPECT_EQ( stumpless_get_param_count( basic_element ),
+               original_param_count );
+  }
+
   TEST_F( ElementTest, SetName ) {
     const char *new_name = "awesome-new-name";
     const struct stumpless_element *result;
