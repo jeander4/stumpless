@@ -236,16 +236,13 @@ namespace {
   TEST( LoadParamTest, InvalidName ) {
     struct stumpless_param param;
     const struct stumpless_param *result;
-    stumpless_test_data invalid_names = load_corpus_folder("invalid_param_name");
+    std::vector<std::string> invalid_names = load_corpus_folder("invalid_param_name");
 
-    for(int i = 0; i < invalid_names.length; ++i) {
-      result = stumpless_load_param( &param, invalid_names.test_strings[i], "test-value" );
+    for(const auto& invalid_name : invalid_names) {
+      result = stumpless_load_param( &param, invalid_name.c_str(), "test-value" );
       EXPECT_NULL( result );
       EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
-      delete[] invalid_names.test_strings[i];
     }
-
-    free((void *) invalid_names.test_strings);
     stumpless_free_all(  );
   }
 
@@ -333,16 +330,13 @@ namespace {
 
   TEST( NewParamTest, InvalidName ) {
     struct stumpless_param *param;
-    stumpless_test_data invalid_names = load_corpus_folder("invalid_param_name");
+    std::vector<std::string> invalid_names = load_corpus_folder("invalid_param_name");
 
-    for(int i = 0; i < invalid_names.length; ++i) {
-      param = stumpless_new_param( invalid_names.test_strings[i], "test-value" );
+    for(const auto& invalid_name : invalid_names) {
+      param = stumpless_new_param( invalid_name.c_str(), "test-value" );
       EXPECT_NULL( param );
       EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
-      delete[] invalid_names.test_strings[i];
     }
-
-    free((void *) invalid_names.test_strings);
     stumpless_free_all(  );
   }
 

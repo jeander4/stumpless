@@ -18,6 +18,7 @@
 
 #include <cstddef>
 #include <cstdlib>
+#include <string>
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include <stumpless.h>
@@ -352,16 +353,13 @@ namespace {
 
   TEST_F( ElementTest, GetParamByNameInvalidName ) {
     const struct stumpless_param *result;
-    stumpless_test_data invalid_names = load_corpus_folder("invalid_param_name");
+    std::vector<std::string> invalid_names = load_corpus_folder("invalid_param_name");
 
-    for(int i = 0; i < invalid_names.length; ++i) {
-      result = stumpless_get_param_by_name( element_with_params, invalid_names.test_strings[i] );
-      delete[] invalid_names.test_strings[i];
+    for(const auto& invalid_name : invalid_names) {
+      result = stumpless_get_param_by_name( element_with_params, invalid_name.c_str() );
       EXPECT_NULL( result );
       EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
     }
-
-    free((void *) invalid_names.test_strings);
   }
 
   TEST_F( ElementTest, GetParamCount ) {
@@ -556,16 +554,13 @@ namespace {
 
   TEST_F( ElementTest, GetParamValueByNameInvalidName ) {
     const char *result;
-    stumpless_test_data invalid_names = load_corpus_folder("invalid_param_name");
+    std::vector<std::string> invalid_names = load_corpus_folder("invalid_param_name");
 
-    for(int i = 0; i < invalid_names.length; ++i) {
-      result = stumpless_get_param_value_by_name( element_with_params, invalid_names.test_strings[i] );
+    for(const auto& invalid_name : invalid_names) {
+      result = stumpless_get_param_value_by_name( element_with_params, invalid_name.c_str() );
       EXPECT_NULL( result );
       EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
-      delete[] invalid_names.test_strings[i];
     }
-
-    free((void *) invalid_names.test_strings);
   }
 
   TEST_F( ElementTest, HasParam ) {
@@ -590,16 +585,13 @@ namespace {
 
   TEST_F( ElementTest, HasParamInvalidName ) {
     bool result;
-    stumpless_test_data invalid_names = load_corpus_folder("invalid_param_name");
+    std::vector<std::string> invalid_names = load_corpus_folder("invalid_param_name");
 
-    for(int i = 0; i < invalid_names.length; ++i) {
-      result = stumpless_element_has_param( element_with_params, invalid_names.test_strings[i] );
+    for(const auto& invalid_name : invalid_names) {
+      result = stumpless_element_has_param( element_with_params, invalid_name.c_str() );
       EXPECT_FALSE( result );
       EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
-      delete[] invalid_names.test_strings[i];
     }
-
-    free((void *) invalid_names.test_strings);
   }
 
   TEST_F( ElementTest, SetName ) {
@@ -1012,16 +1004,14 @@ namespace {
 
   TEST( NewElementTest, InvalidName ) {
     struct stumpless_element *element;
-    stumpless_test_data invalid_names = load_corpus_folder("invalid_param_name");
+    std::vector<std::string> invalid_names = load_corpus_folder("invalid_param_name");
 
-    for(int i = 0; i < invalid_names.length; ++i) {
-      element = stumpless_new_element( invalid_names.test_strings[i] );
+    for(const auto& invalid_name : invalid_names) {
+      element = stumpless_new_element( invalid_name.c_str() );
       EXPECT_NULL( element );
       EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
-      delete[] invalid_names.test_strings[i];
     }
 
-    free((void *) invalid_names.test_strings);
     stumpless_free_all(  );
   }
   
@@ -1048,19 +1038,17 @@ namespace {
   TEST( SetElementNameTest, InvalidName) {
     struct stumpless_element *element;
     struct stumpless_element *result;
-    stumpless_test_data invalid_names = load_corpus_folder("invalid_param_name");
+    std::vector<std::string> invalid_names = load_corpus_folder("invalid_param_name");
 
     element = stumpless_new_element( "element" );
     ASSERT_NOT_NULL( element );
 
-    for(int i = 0; i < invalid_names.length; ++i) {
-      result = stumpless_set_element_name( element, invalid_names.test_strings[i]);
+    for(const auto& invalid_name : invalid_names) {
+      result = stumpless_set_element_name( element, invalid_name.c_str() );
       EXPECT_NULL( result );
       EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
-      delete[] invalid_names.test_strings[i];
     }
 
-    free((void *) invalid_names.test_strings);
     stumpless_destroy_element_and_contents( element );
     stumpless_free_all(  );
   }
