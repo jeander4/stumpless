@@ -22,20 +22,46 @@
 #include "private/facility.h"
 #include "private/strhelper.h"
 
-static char *facility_enum_to_string[] = {
-  STUMPLESS_FOREACH_FACILITY( GENERATE_STRING )
+// Define error codes and messages
+int stumpless_last_error = 0;
+char stumpless_error_message[256];
+
+// Error code definitions
+#define STUMPLESS_ERROR_NONE 0
+#define STUMPLESS_ERROR_INVALID_FACILITY -1
+#define STUMPLESS_ERROR_UNKNOWN_FACILITY -2
+
+// Error handling functions
+void stumpless_set_error(int error_code, const char *message) {
+    stumpless_last_error = error_code;
+    strncpy(stumpless_error_message, message, sizeof(stumpless_error_message) - 1);
+    stumpless_error_message[sizeof(stumpless_error_message) - 1] = '\0'; // Null-terminate
+}
+
+void stumpless_clear_error() {
+    stumpless_last_error = STUMPLESS_ERROR_NONE;
+    stumpless_error_message[0] = '\0';
+}
+
+
+
+const char *facility_enum_to_string[] = {
+   "STUMPLESS_FACILITY_KERNEL", "STUMPLESS_FACILITY_USER", STUMPLESS_FOREACH_FACILITY( GENERATE_STRING )
 };
 
 const char *
 stumpless_get_facility_string( enum stumpless_facility facility ) {
   if ( !facility_is_invalid( facility ) ) {
+      stumpless_clear_error();
     return facility_enum_to_string[facility >> 3];
   }
+    stumpless_set_error(STUMPLESS_ERROR_INVALID_FACILITY, "Invalid facility code provided");
   return "NO_SUCH_FACILITY";
 }
 
 enum stumpless_facility
 stumpless_get_facility_enum( const char *facility_string ) {
+    stumpless_clear_error();
   return stumpless_get_facility_enum_from_buffer(facility_string, strlen(facility_string));
 }
 
@@ -50,20 +76,23 @@ stumpless_get_facility_enum_from_buffer(const char *facility_buffer, size_t faci
 
  for( i = 0; i < facility_bound; i++ ) {
   if( strncasecmp_custom( facility_buffer, facility_enum_to_string[i] + str_offset, facility_buffer_length ) == 0 ) {
+      stumpless_clear_error();
    return i << 3;
   }
  }
 
  // exeption, for 'security' return 'auth' enum value
   if( strncasecmp_custom( facility_buffer, "SECURITY", facility_buffer_length ) == 0 ) {
+      stumpless_clear_error();
   return STUMPLESS_FACILITY_AUTH_VALUE;
  }
 
  // exeption, for 'authpriv' not presented in enum list
   if( strncasecmp_custom( facility_buffer, "AUTHPRIV", facility_buffer_length ) == 0 ) {
+      stumpless_clear_error();
   return STUMPLESS_FACILITY_AUTH2_VALUE;
  }
-
+stumpless_set_error(STUMPLESS_ERROR_UNKNOWN_FACILITY, "Unknown facility name provided");
  return -1;
 }
 
