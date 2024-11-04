@@ -28,7 +28,7 @@
 #if defined(__APPLE__)
   namespace fs = std::__fs::filesystem;
 #else
-  namespace fs = std::fs::filesystem;
+  namespace fs = std::filesystem;
 #endif
 
 using namespace std;
