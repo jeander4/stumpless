@@ -60,25 +60,47 @@ stumpless_get_prival_string( int prival ) {
 
 const char *
 stumpless_get_priority_string( int prival ) {
-  const char *severity;
+  #include <stdio.h>
   const char *facility;
+  const char *severity;
+  char *facility_suffix;
+  char *severity_suffix;
+
   size_t priority_string_size;
   char* priority_string;
 
-  severity = stumpless_get_severity_string( get_severity( prival ) );
   facility = stumpless_get_facility_string( get_facility( prival ) );
-   
-  size_t len_severity = strlen(severity);
-  size_t len_facility = strlen(facility);
+  severity = stumpless_get_severity_string( get_severity( prival ) );
+
+  facility_suffix = strrchr(facility, '_');
+  severity_suffix = strrchr(severity, '_');
+
+  if (facility_suffix == NULL || severity_suffix == NULL) {
+    return stumpless_get_prival_string( prival );
+  }
+  // then, we increment the pointer by 1 in order to skip the '_'
+  facility_suffix++;
+  severity_suffix++;
+
+  printf("facility: %s\n", facility_suffix);
+  printf("severity: %s\n", severity_suffix);
+
+  size_t len_facility_suffix = strlen(facility_suffix);
+  size_t len_severity_suffix = strlen(severity_suffix);
 
   // +1 for '.' formatting, +1 for termination
-  priority_string_size = ( len_severity + len_facility + 2);
+  priority_string_size = ( len_facility_suffix + len_severity_suffix + 2 );
   priority_string = alloc_mem( priority_string_size );
 
-  memcpy( priority_string, facility , len_facility); 
-  priority_string[len_severity] = '.';
-  memcpy( priority_string + len_facility + 1, severity, len_severity);
-  priority_string[priority_string_size-1] = "\0";
+  for (size_t idx = 0; idx < len_facility_suffix; idx++) {
+    priority_string[idx] = tolower(facility_suffix[idx]);
+  }
+  priority_string[len_facility_suffix] = '.';
+
+  for (size_t idx = 0; idx < len_severity_suffix; idx++) {
+    priority_string[len_facility_suffix + 1 + idx] = tolower(severity_suffix[idx]);
+  }
+  priority_string[priority_string_size - 1] = '\0';
 
   return priority_string;
 }

@@ -123,12 +123,13 @@ namespace {
   }
 
   TEST(GetPriorityString, ValidPrival) {
+    #include <stdio.h>
     int prival;
     const char *result;
 
     prival = STUMPLESS_SEVERITY_ERR | STUMPLESS_FACILITY_USER;
     result = stumpless_get_priority_string( prival );
-    EXPECT_STREQ( result, "STUMPLESS_FACILITY_USER.STUMPLESS_SEVERITY_ERR" );
+    EXPECT_STREQ( result, "user.err" );
 
     free( ( void * ) result );
   }
