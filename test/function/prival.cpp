@@ -123,7 +123,6 @@ namespace {
   }
 
   TEST(GetPriorityString, ValidPrival) {
-    #include <stdio.h>
     int prival;
     const char *result;
 

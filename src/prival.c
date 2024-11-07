@@ -60,7 +60,6 @@ stumpless_get_prival_string( int prival ) {
 
 const char *
 stumpless_get_priority_string( int prival ) {
-  #include <stdio.h>
   const char *facility;
   const char *severity;
   char *facility_suffix;
@@ -81,9 +80,6 @@ stumpless_get_priority_string( int prival ) {
   // then, we increment the pointer by 1 in order to skip the '_'
   facility_suffix++;
   severity_suffix++;
-
-  printf("facility: %s\n", facility_suffix);
-  printf("severity: %s\n", severity_suffix);
 
   size_t len_facility_suffix = strlen(facility_suffix);
   size_t len_severity_suffix = strlen(severity_suffix);
