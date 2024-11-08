@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 
+#include <string>
 #include <cstddef>
 #include <cstdlib>
 #include <cstring>
