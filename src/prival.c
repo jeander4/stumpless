@@ -62,7 +62,6 @@ const char *
 stumpless_get_priority_string( int prival ) {
   const char *facility;
   const char *severity;
-  const char *aux;
 
   size_t priority_string_size;
   char* priority_string;
@@ -70,19 +69,12 @@ stumpless_get_priority_string( int prival ) {
   facility = stumpless_get_facility_string( get_facility( prival ) );
   severity = stumpless_get_severity_string( get_severity( prival ) );
 
-  aux = facility;
   facility = strrchr(facility, '_');
-  if (facility == NULL)
-    facility = aux;
-  else
-    facility++; // inc by 1 to skip '_'
-
-  aux = severity;
   severity = strrchr(severity, '_');
-  if (severity == NULL)
-    severity = aux;
-  else
-    severity++; // inc by 1 to skip '_'
+
+  // inc by 1 to skip '_'
+  facility++; 
+  severity++;
 
   size_t len_facility = strlen(facility);
   size_t len_severity = strlen(severity);
