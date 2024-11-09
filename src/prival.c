@@ -58,6 +58,51 @@ stumpless_get_prival_string( int prival ) {
   return prival_string;
 }
 
+const char *
+stumpless_get_priority_string( int prival ) {
+  const char *facility;
+  const char *severity;
+
+  size_t priority_string_size;
+  char* priority_string;
+
+  if ((prival & 0xff) != prival)
+    return NULL;
+  if (facility_is_invalid(get_facility(prival)))
+    return NULL;
+
+  facility = stumpless_get_facility_string( get_facility( prival ) );
+  severity = stumpless_get_severity_string( get_severity( prival ) );
+
+  facility = strrchr(facility, '_');
+  severity = strrchr(severity, '_');
+
+  // inc by 1 to skip '_'
+  facility++; 
+  severity++;
+
+  size_t len_facility = strlen(facility);
+  size_t len_severity = strlen(severity);
+
+  // +1 for '.' formatting, +1 for termination
+  priority_string_size = ( len_facility + len_severity + 2 );
+  priority_string = alloc_mem( priority_string_size );
+
+  for (size_t idx = 0; idx < len_facility; idx++) {
+    priority_string[idx] = tolower(facility[idx]);
+  }
+
+  priority_string[len_facility] = '.';
+
+  for (size_t idx = 0; idx < len_severity; idx++) {
+    priority_string[len_facility + 1 + idx] = tolower(severity[idx]);
+  }
+
+  priority_string[priority_string_size - 1] = '\0';
+
+  return priority_string;
+}
+
 int
 stumpless_prival_from_string( const char *string ) {
   int prival;

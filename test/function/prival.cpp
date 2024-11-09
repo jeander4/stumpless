@@ -121,4 +121,52 @@ namespace {
 
     free( ( void * ) result );
   }
+
+  TEST(GetPriorityString, ValidPrival) {
+    int prival;
+    const char *result;
+
+    prival = STUMPLESS_SEVERITY_ERR | STUMPLESS_FACILITY_USER;
+    result = stumpless_get_priority_string( prival );
+    EXPECT_STREQ( result, "user.err" );
+
+    free( ( void * ) result );
+  }
+
+  TEST(GetPriorityString, InvalidPrivalNegativeArgument) {
+    int prival;
+    const char *result;
+
+    // Test for negative argument (falls outside of a byte)
+    prival = -1;
+    result = stumpless_get_priority_string( prival );
+    EXPECT_STREQ( result, NULL );
+
+    free( ( void * ) result );
+  }
+
+  TEST(GetPriorityString, InvalidPrivalGreaterThanRange) {
+    int prival;
+    const char *result;
+
+    // Test for argument greater than one byte
+    prival = 0x100;
+    result = stumpless_get_priority_string( prival );
+    EXPECT_STREQ( result, NULL );
+
+    free( ( void * ) result );
+  }
+
+  TEST(GetPriorityString, InvalidPrivalFacilityGreaterThanRange) {
+    int prival;
+    const char *result;
+
+    // Test for argument that translates into an invalid facility
+    // (greater than 0xbf)
+    prival = 0xc0;
+    result = stumpless_get_priority_string( prival );
+    EXPECT_STREQ( result, NULL );
+
+    free( ( void * ) result );
+  }
 }
