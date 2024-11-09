@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 
+#include <string>
 #include <cstddef>
 #include <cstdlib>
 #include <cstring>
@@ -596,34 +597,24 @@ namespace {
 
   TEST_F( EntryTest, GetParamByNameInvalidParamName ) {
     const struct stumpless_param *result;
+    std::vector<std::string> invalid_names = load_corpus_folder("invalid_param_name");
 
-    result = stumpless_get_entry_param_by_name( basic_entry, "e-name", "par=am" );
-    EXPECT_NULL( result );
-    EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
-
-    result = stumpless_get_entry_param_by_name( basic_entry, "e-name", "par]am" );
-    EXPECT_NULL( result );
-    EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
-
-    result = stumpless_get_entry_param_by_name( basic_entry, "e-name", "par\"am" );
-    EXPECT_NULL( result );
-    EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
+    for(const auto& invalid_name : invalid_names) {
+      result = stumpless_get_entry_param_by_name( basic_entry, "e-name", invalid_name.c_str() );
+      EXPECT_NULL( result );
+      EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
+    }
   }
 
   TEST_F( EntryTest, GetParamByNameInvalidElementName ) {
     const struct stumpless_param *result;
+    std::vector<std::string> invalid_names = load_corpus_folder("invalid_param_name");
 
-    result = stumpless_get_entry_param_by_name( basic_entry, "ele=ment", "param" );
-    EXPECT_NULL( result );
-    EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
-
-    result = stumpless_get_entry_param_by_name( basic_entry, "ele]ment", "param" );
-    EXPECT_NULL( result );
-    EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
-
-    result = stumpless_get_entry_param_by_name( basic_entry, "e-name\"", "param" );
-    EXPECT_NULL( result );
-    EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
+    for(const auto& invalid_name : invalid_names) {
+      result = stumpless_get_entry_param_by_name( basic_entry, invalid_name.c_str(), "param" );
+      EXPECT_NULL( result );
+      EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
+    }
   }
 
   TEST_F( EntryTest, GetParamValueByIndex ) {
@@ -689,34 +680,24 @@ namespace {
 
   TEST_F( EntryTest, GetParamValueByNameInvalidParamName ) {
     const char *result;
+    std::vector<std::string> invalid_names = load_corpus_folder("invalid_param_name");
 
-    result = stumpless_get_entry_param_value_by_name( basic_entry, "e-name", "par=am" );
-    EXPECT_NULL( result );
-    EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
-
-    result = stumpless_get_entry_param_value_by_name( basic_entry, "e-name", "par]am" );
-    EXPECT_NULL( result );
-    EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
-
-    result = stumpless_get_entry_param_value_by_name( basic_entry, "e-name", "par\"am" );
-    EXPECT_NULL( result );
-    EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
+    for(const auto& invalid_name : invalid_names) {
+      result = stumpless_get_entry_param_value_by_name( basic_entry, "e-name", invalid_name.c_str() );
+      EXPECT_NULL( result );
+      EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
+    }
   }
 
   TEST_F( EntryTest, GetParamValueByNameInvalidElementName ) {
     const char *result;
+    std::vector<std::string> invalid_names = load_corpus_folder("invalid_param_name");
 
-    result = stumpless_get_entry_param_value_by_name( basic_entry, "e=name", "param" );
-    EXPECT_NULL( result );
-    EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
-
-    result = stumpless_get_entry_param_value_by_name( basic_entry, "e]name", "param" );
-    EXPECT_NULL( result );
-    EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
-
-    result = stumpless_get_entry_param_value_by_name( basic_entry, "\"e-name", "param" );
-    EXPECT_NULL( result );
-    EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
+    for(const auto& invalid_name : invalid_names) {
+      result = stumpless_get_entry_param_value_by_name( basic_entry, invalid_name.c_str(), "param" );
+      EXPECT_NULL( result );
+      EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
+    }
   }
 
   TEST_F( EntryTest, HasElement ) {
@@ -745,50 +726,35 @@ namespace {
 
   TEST_F( EntryTest, HasElementInvalidName ) {
     bool result;
+    std::vector<std::string> invalid_names = load_corpus_folder("invalid_param_name");
 
-    result = stumpless_entry_has_element( basic_entry, "ele=ment" );
-    EXPECT_FALSE( result );
-    EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
-
-    result = stumpless_entry_has_element( basic_entry, "ele]ment" );
-    EXPECT_FALSE( result );
-    EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
-
-    result = stumpless_entry_has_element( basic_entry, "element\"" );
-    EXPECT_FALSE( result );
-    EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
+    for(const auto& invalid_name : invalid_names) {
+      result = stumpless_entry_has_element( basic_entry, invalid_name.c_str() );
+      EXPECT_FALSE( result );
+      EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
+    }
   }
 
   TEST_F( EntryTest, GetElementInvalidName ) {
     bool result;
+    std::vector<std::string> invalid_names = load_corpus_folder("invalid_param_name");
 
-    result = stumpless_get_element_by_name( basic_entry, "ele=ment" );
-    EXPECT_FALSE( result );
-    EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
-
-    result = stumpless_get_element_by_name( basic_entry, "ele]ment" );
-    EXPECT_FALSE( result );
-    EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
-
-    result = stumpless_get_element_by_name( basic_entry, "element\"" );
-    EXPECT_FALSE( result );
-    EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
+    for(const auto& invalid_name : invalid_names) {
+      result = stumpless_get_element_by_name( basic_entry, invalid_name.c_str() );
+      EXPECT_FALSE( result );
+      EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
+    }
   }
 
   TEST_F( EntryTest, GetElementIdxInvalidName ) {
     bool result;
+    std::vector<std::string> invalid_names = load_corpus_folder("invalid_param_name");
 
-    result = stumpless_get_element_index( basic_entry, "ele=ment" );
-    EXPECT_FALSE( result );
-    EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
-
-    result = stumpless_get_element_index( basic_entry, "ele]ment" );
-    EXPECT_FALSE( result );
-    EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
-
-    result = stumpless_get_element_index( basic_entry, "element\"" );
-    EXPECT_FALSE( result );
-    EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
+    for(const auto& invalid_name : invalid_names) {
+      result = stumpless_get_element_index( basic_entry, invalid_name.c_str() );
+      EXPECT_FALSE( result );
+      EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
+    }
   }
 
   TEST_F( EntryTest, SetAppName ) {
@@ -1740,7 +1706,7 @@ namespace {
     stumpless_free_all(  );
   }
 
-  TEST( NewEntryStrTest, New ){
+  TEST( NewEntryStrTest, New ) {
     struct stumpless_entry *entry;
     const char *app_name = "test-app-name";
     const char *msgid = "test-msgid";

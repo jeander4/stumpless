@@ -85,4 +85,18 @@ create_nil_entry( void );
 const char *
 load_corpus( const std::string& name );
 
+/**
+ * Returns stumpless_test_data holding the contents of all the files at the named
+ * location in the test/corpora folder. For example, a name of "invalid_param_name"
+ * will return the contents of all the files under test/corpora/invalid_param_name
+ * directory in the form of an array.
+ *
+ *
+ * @param name The directory name.
+ *
+ * @return vector of strings holding test values.
+ */
+std::vector<std::string>
+load_corpus_folder( const std::string& name );
+
 #endif /* __STUMPLESS_TEST_HELPER_FIXTURE_HPP */

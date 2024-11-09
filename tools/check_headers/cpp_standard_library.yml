@@ -16,3 +16,4 @@
 "va_end": "cstdarg"
 "va_list": "cstdarg"
 "va_start": "cstdarg"
+"filesystem": "filesystem"
