@@ -66,6 +66,11 @@ stumpless_get_priority_string( int prival ) {
   size_t priority_string_size;
   char* priority_string;
 
+  if ((prival & 0xff) != prival)
+    return NULL;
+  if (facility_is_invalid(get_facility(prival)))
+    return NULL;
+
   facility = stumpless_get_facility_string( get_facility( prival ) );
   severity = stumpless_get_severity_string( get_severity( prival ) );
 
