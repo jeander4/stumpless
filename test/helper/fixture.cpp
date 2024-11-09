@@ -16,12 +16,20 @@
  * limitations under the License.
  */
 
+
 #include <cstddef>
 #include <fstream>
 #include <string>
 #include <stumpless.h>
 #include "test/config.hpp"
 #include "test/helper/fixture.hpp"
+#include <filesystem>
+
+#if defined(__APPLE__)
+  namespace fs = std::__fs::filesystem;
+#else
+  namespace fs = std::filesystem;
+#endif
 
 using namespace std;
 
@@ -87,4 +95,29 @@ load_corpus( const string& name ) {
   corpus_file.close(  );
 
   return buffer;
+}
+
+std::vector<std::string> load_corpus_folder( const std::string& name ) {
+  std::vector<std::string> test_strings;
+  std::string corpora_dir = std::string( FUZZ_CORPORA_DIR ) + "/" + name;
+
+  // Check if the directory exists
+  if (!fs::exists(corpora_dir) || !fs::is_directory(corpora_dir)) {
+    return test_strings;  // Return an empty vector
+  }
+
+  for ( const auto& entry : fs::directory_iterator( corpora_dir ) ) {
+    if ( entry.is_regular_file() ) {  // Only process regular files
+      std::string filePath = entry.path().string();
+
+      const char* buffer = load_corpus(filePath);
+      if (buffer) { // Check if buffer is not NULL
+        std::string test_string(buffer); // Convert char* to std::string
+        test_strings.push_back(test_string);
+        delete[] buffer; // Clean up allocated memory after using it
+      }
+    }
+  }
+
+  return test_strings;
 }

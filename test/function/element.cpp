@@ -18,10 +18,12 @@
 
 #include <cstddef>
 #include <cstdlib>
+#include <string>
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include <stumpless.h>
 #include "test/helper/assert.hpp"
+#include "test/helper/fixture.hpp"
 #include "test/helper/memory_allocation.hpp"
 
 using::testing::HasSubstr;
@@ -351,18 +353,13 @@ namespace {
 
   TEST_F( ElementTest, GetParamByNameInvalidName ) {
     const struct stumpless_param *result;
+    std::vector<std::string> invalid_names = load_corpus_folder("invalid_param_name");
 
-    result = stumpless_get_param_by_name( element_with_params, "par=am" );
-    EXPECT_NULL( result );
-    EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
-
-    result = stumpless_get_param_by_name( element_with_params, "par]am" );
-    EXPECT_NULL( result );
-    EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
-
-    result = stumpless_get_param_by_name( element_with_params, "par\"am" );
-    EXPECT_NULL( result );
-    EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
+    for(const auto& invalid_name : invalid_names) {
+      result = stumpless_get_param_by_name( element_with_params, invalid_name.c_str() );
+      EXPECT_NULL( result );
+      EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
+    }
   }
 
   TEST_F( ElementTest, GetParamCount ) {
@@ -557,18 +554,13 @@ namespace {
 
   TEST_F( ElementTest, GetParamValueByNameInvalidName ) {
     const char *result;
+    std::vector<std::string> invalid_names = load_corpus_folder("invalid_param_name");
 
-    result = stumpless_get_param_value_by_name( element_with_params, "par=am" );
-    EXPECT_NULL( result );
-    EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
-
-    result = stumpless_get_param_value_by_name( element_with_params, "par]am" );
-    EXPECT_NULL( result );
-    EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
-
-    result = stumpless_get_param_value_by_name( element_with_params, "par\"am" );
-    EXPECT_NULL( result );
-    EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
+    for(const auto& invalid_name : invalid_names) {
+      result = stumpless_get_param_value_by_name( element_with_params, invalid_name.c_str() );
+      EXPECT_NULL( result );
+      EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
+    }
   }
 
   TEST_F( ElementTest, HasParam ) {
@@ -593,18 +585,13 @@ namespace {
 
   TEST_F( ElementTest, HasParamInvalidName ) {
     bool result;
+    std::vector<std::string> invalid_names = load_corpus_folder("invalid_param_name");
 
-    result = stumpless_element_has_param( element_with_params, "par=am" );
-    EXPECT_FALSE( result );
-    EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
-
-    result = stumpless_element_has_param( element_with_params, "para]m" );
-    EXPECT_FALSE( result );
-    EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
-
-    result = stumpless_element_has_param( element_with_params, "pa\"ram" );
-    EXPECT_FALSE( result );
-    EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
+    for(const auto& invalid_name : invalid_names) {
+      result = stumpless_element_has_param( element_with_params, invalid_name.c_str() );
+      EXPECT_FALSE( result );
+      EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
+    }
   }
 
   TEST_F( ElementTest, HighParamCount ) {
@@ -1034,19 +1021,14 @@ namespace {
 
   TEST( NewElementTest, InvalidName ) {
     struct stumpless_element *element;
+    std::vector<std::string> invalid_names = load_corpus_folder("invalid_param_name");
 
-    element = stumpless_new_element( "ele=ment" );
-    EXPECT_NULL( element );
-    EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
+    for(const auto& invalid_name : invalid_names) {
+      element = stumpless_new_element( invalid_name.c_str() );
+      EXPECT_NULL( element );
+      EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
+    }
 
-    element = stumpless_new_element( "element]" );
-    EXPECT_NULL( element );
-    EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
-
-    element = stumpless_new_element( "El\"ment" );
-    EXPECT_NULL( element );
-    EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
-    
     stumpless_free_all(  );
   }
   
@@ -1073,22 +1055,17 @@ namespace {
   TEST( SetElementNameTest, InvalidName) {
     struct stumpless_element *element;
     struct stumpless_element *result;
+    std::vector<std::string> invalid_names = load_corpus_folder("invalid_param_name");
 
     element = stumpless_new_element( "element" );
     ASSERT_NOT_NULL( element );
 
-    result = stumpless_set_element_name( element, "ele=ment");
-    EXPECT_NULL( result );
-    EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
+    for(const auto& invalid_name : invalid_names) {
+      result = stumpless_set_element_name( element, invalid_name.c_str() );
+      EXPECT_NULL( result );
+      EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
+    }
 
-    result = stumpless_set_element_name( element, "eleme]nt");
-    EXPECT_NULL( result );
-    EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
-
-    result = stumpless_set_element_name( element, "element\"");
-    EXPECT_NULL( result );
-    EXPECT_ERROR_ID_EQ( STUMPLESS_INVALID_ENCODING );
-    
     stumpless_destroy_element_and_contents( element );
     stumpless_free_all(  );
   }

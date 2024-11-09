@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.2.3)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+
 if(POLICY CMP0135)
   cmake_policy(SET CMP0135 NEW)
 endif()
@@ -844,7 +847,9 @@ add_function_test(current_target
 )
 
 add_function_test(element
-  SOURCES test/function/element.cpp
+  SOURCES
+    test/function/element.cpp
+    $<TARGET_OBJECTS:test_helper_fixture>
 )
 
 add_function_test(element_leak
@@ -1055,7 +1060,9 @@ add_function_test(memory
 )
 
 add_function_test(param
-  SOURCES ${PROJECT_SOURCE_DIR}/test/function/param.cpp
+  SOURCES
+    ${PROJECT_SOURCE_DIR}/test/function/param.cpp
+    $<TARGET_OBJECTS:test_helper_fixture>
 )
 
 add_function_test(perror
