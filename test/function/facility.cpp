@@ -116,4 +116,83 @@ namespace {
     EXPECT_EQ( result, -1 );
   }
 
+
+TEST(GetFacilityString, InvalidFacility) {
+    const char *result;
+    stumpless_facility invalid_facility = 999; // Value out of valid range
+
+    EXPECT_THROW({
+      result = stumpless_get_facility_string(invalid_facility);
+    }, std::runtime_error);
+
+    // Ensure fallback string is still returned
+    result = stumpless_get_facility_string(invalid_facility);
+    EXPECT_STREQ(result, "NO_SUCH_FACILITY");
+  }
+
+  TEST(GetFacilityEnum, NullFacilityString) {
+    EXPECT_THROW({
+      stumpless_get_facility_enum(NULL);
+    }, std::invalid_argument);
+  }
+
+  TEST(GetFacilityEnumFromBuffer, NullFacilityBuffer) {
+    EXPECT_THROW({
+      stumpless_get_facility_enum_from_buffer(NULL, 0);
+    }, std::invalid_argument);
+  }
+
+  TEST(GetFacilityEnum, InvalidFacilityString) {
+    int result;
+
+    EXPECT_THROW({
+      result = stumpless_get_facility_enum("INVALID");
+    }, std::runtime_error);
+
+    // Ensure fallback value is still returned (-1 for invalid facility)
+    result = stumpless_get_facility_enum("INVALID");
+    EXPECT_EQ(result, -1);
+  }
+
+  TEST(GetFacilityEnumFromBuffer, InvalidFacilityBuffer) {
+    int result;
+
+    EXPECT_THROW({
+      result = stumpless_get_facility_enum_from_buffer("INVALID", strlen("INVALID"));
+    }, std::runtime_error);
+
+    // Ensure fallback value is still returned
+    result = stumpless_get_facility_enum_from_buffer("INVALID", strlen("INVALID"));
+    EXPECT_EQ(result, -1);
+  }
+
+  TEST(GetFacilityEnumFromBuffer, ValidFacilities) {
+    struct FacilityBufferTestCase {
+      const char *facility_buffer;
+      int expected_enum;
+    } test_cases[] = {
+      {"USER", STUMPLESS_FACILITY_USER},
+      {"MAIL", STUMPLESS_FACILITY_MAIL},
+      {"DAEMON", STUMPLESS_FACILITY_DAEMON},
+      {"AUTH", STUMPLESS_FACILITY_AUTH},
+      {"SECURITY", STUMPLESS_FACILITY_AUTH},
+      {"SYSLOG", STUMPLESS_FACILITY_SYSLOG},
+      {"LPR", STUMPLESS_FACILITY_LPR},
+      {"NEWS", STUMPLESS_FACILITY_NEWS},
+      {"UUCP", STUMPLESS_FACILITY_UUCP},
+      {"CRON", STUMPLESS_FACILITY_CRON},
+      {"AUTHPRIV", STUMPLESS_FACILITY_AUTH2},
+      {"FTP", STUMPLESS_FACILITY_FTP},
+      {"NTP", STUMPLESS_FACILITY_NTP},
+      {"AUDIT", STUMPLESS_FACILITY_AUDIT},
+      {"ALERT", STUMPLESS_FACILITY_ALERT},
+    };
+
+    for (const auto &test_case : test_cases) {
+      int result = stumpless_get_facility_enum_from_buffer(
+          test_case.facility_buffer, strlen(test_case.facility_buffer));
+      EXPECT_EQ(result, test_case.expected_enum);
+    }
+  }
+
 }
