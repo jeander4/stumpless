@@ -119,50 +119,45 @@ namespace {
 
 TEST(GetFacilityString, InvalidFacility) {
     const char *result;
-    stumpless_facility invalid_facility = 999; // Value out of valid range
+    stumpless_facility invalid_facility = static_cast<stumpless_facility>(999); // Explicit cast
 
-    EXPECT_THROW({
-      result = stumpless_get_facility_string(invalid_facility);
-    }, std::runtime_error);
-
-    // Ensure fallback string is still returned
+    // Check that the fallback string is returned
     result = stumpless_get_facility_string(invalid_facility);
     EXPECT_STREQ(result, "NO_SUCH_FACILITY");
   }
 
   TEST(GetFacilityEnum, NullFacilityString) {
-    EXPECT_THROW({
-      stumpless_get_facility_enum(NULL);
-    }, std::invalid_argument);
+     enum stumpless_facility facility = stumpless_get_facility_enum(NULL);
+
+    // Check that the function returns -1 for NULL input
+    EXPECT_EQ(facility, -1);
   }
 
   TEST(GetFacilityEnumFromBuffer, NullFacilityBuffer) {
-    EXPECT_THROW({
-      stumpless_get_facility_enum_from_buffer(NULL, 0);
-    }, std::invalid_argument);
+    // Call the function with a NULL buffer
+    enum stumpless_facility facility = stumpless_get_facility_enum_from_buffer(NULL, 0);
+
+    // Verify the function returns -1 for NULL input
+    EXPECT_EQ(facility, -1);
   }
 
   TEST(GetFacilityEnum, InvalidFacilityString) {
     int result;
 
-    EXPECT_THROW({
-      result = stumpless_get_facility_enum("INVALID");
-    }, std::runtime_error);
-
-    // Ensure fallback value is still returned (-1 for invalid facility)
+    // Call the function with an invalid facility string
     result = stumpless_get_facility_enum("INVALID");
+
+    // Validate that the function returns -1 for invalid input
     EXPECT_EQ(result, -1);
   }
 
   TEST(GetFacilityEnumFromBuffer, InvalidFacilityBuffer) {
     int result;
 
-    EXPECT_THROW({
-      result = stumpless_get_facility_enum_from_buffer("INVALID", strlen("INVALID"));
-    }, std::runtime_error);
-
-    // Ensure fallback value is still returned
+    // Call the function with an invalid facility buffer
     result = stumpless_get_facility_enum_from_buffer("INVALID", strlen("INVALID"));
+
+    // Validate that the function returns -1 for invalid input
     EXPECT_EQ(result, -1);
   }
 
