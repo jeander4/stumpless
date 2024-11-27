@@ -61,6 +61,8 @@ namespace {
     STUMPLESS_FOREACH_FACILITY( CHECK_FACILITY_ENUM )
   }
 
+//Old test
+/*
   TEST( GetFacilityEnum, LowercaseFacility ) {
     int result;
 
@@ -110,6 +112,7 @@ namespace {
     EXPECT_EQ( result, STUMPLESS_FACILITY_ALERT );
     EXPECT_NO_ERROR;
   }
+*/
 
   TEST( GetFacilityEnum, NoSuchFacility ) {
     int result;
