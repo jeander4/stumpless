@@ -19,6 +19,8 @@
 #include <gtest/gtest.h>
 #include <stumpless.h>
 #include "test/helper/assert.hpp"
+#include <stddef.h>
+#include <string.h>
 
 namespace {
 
