@@ -9,7 +9,21 @@ fixes, check out the
 [roadmap](https://github.com/goatshriek/stumpless/blob/master/docs/roadmap.md).
 
 
-## [3.0.0] - 2024-06-30
+## [3.0.0] - 2024-11-28
+### Added
+ - Memory allocation function accessors:
+    * `stumpless_get_free`
+    * `stumpless_get_malloc`
+    * `stumpless_get_realloc`
+ - Other new functions:
+    * `stumpless_get_priority_string`
+
+### Fixed
+ - Strings that are a case-insensitive prefix of a valid severity string are
+   no longer accepted by severity from string functions.
+ - Memory leak in slab cache expansion.
+ - Use `SO_NOSIGPIPE` where `MSG_NOSIGNAL` is not defined.
+
 ### Removed
  - `stumpless/priority.h`, which was merged into `stumpless/prival.h`.
 
