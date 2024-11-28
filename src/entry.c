@@ -34,7 +34,6 @@
 #include "private/config/wrapper/thread_safety.h"
 #include "private/config/wrapper/wel.h"
 #include "private/config/wrapper/wstring.h"
-#include "private/deprecate.h"
 #include "private/element.h"
 #include "private/entry.h"
 #include "private/error.h"
@@ -159,7 +158,8 @@ stumpless_copy_entry( const struct stumpless_entry *entry ) {
 
   copy->elements = alloc_array( entry->element_count, sizeof( element_copy ) );
   if( !copy->elements ) {
-    goto fail_elements;
+    unchecked_destroy_entry( copy );
+    goto cleanup_and_fail;
   }
 
   for( i = 0; i < entry->element_count; i++ ){
@@ -186,18 +186,6 @@ fail_elements:
 cleanup_and_fail:
   unlock_entry( entry );
   return NULL;
-}
-
-void
-stumpless_destroy_entry( const struct stumpless_entry *entry ) {
-  warn_of_deprecation( "stumpless_destroy_entry has been deprecated in favor "
-                       "of the more descriptive and deliberate "
-                       "stumpless_destroy_entry_and_contents and "
-                       "stumpless_destroy_entry_only functions in order to "
-                       "avoid unintentional memory leaks and use-after-free "
-                       "mistakes" );
-
-  stumpless_destroy_entry_and_contents( entry );
 }
 
 void

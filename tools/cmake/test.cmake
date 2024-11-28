@@ -35,6 +35,12 @@ function(private_add_function_test)
     ${FUNCTION_TEST_ARG_LIBRARIES}
   )
 
+  if("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
+    target_link_libraries(function-test-${FUNCTION_TEST_ARG_NAME}
+      stdc++fs
+    )
+  endif()
+
   target_include_directories(function-test-${FUNCTION_TEST_ARG_NAME}
     PRIVATE
     ${PROJECT_SOURCE_DIR}/include
@@ -300,6 +306,12 @@ set_target_properties(test_helper_fixture
 )
 
 add_dependencies(test_helper_fixture libgtest)
+
+if("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
+  target_link_libraries(test_helper_fixture
+    stdc++fs
+  )
+endif()
 
 target_include_directories(test_helper_fixture
     PRIVATE

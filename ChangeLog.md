@@ -11,6 +11,8 @@ fixes, check out the
 
 ## [3.0.0] - 2024-11-28
 ### Added
+ - Colorization of output in stream targets via ANSI color codes, along with
+   supporting functions `stumpless_set_severity_color`.
  - Memory allocation function accessors:
     * `stumpless_get_free`
     * `stumpless_get_malloc`
