@@ -158,7 +158,8 @@ stumpless_copy_entry( const struct stumpless_entry *entry ) {
 
   copy->elements = alloc_array( entry->element_count, sizeof( element_copy ) );
   if( !copy->elements ) {
-    goto fail_elements;
+    stumpless_destroy_entry_only( copy );
+    goto cleanup_and_fail;
   }
 
   for( i = 0; i < entry->element_count; i++ ){
