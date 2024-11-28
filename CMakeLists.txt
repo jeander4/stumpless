@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.2.3)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+
 if(POLICY CMP0135)
   cmake_policy(SET CMP0135 NEW)
 endif()
@@ -294,6 +297,14 @@ endif()
 
 
 # configuration-specific source files
+
+# we don't check for win32 as on win32 socket operations are handled directly through return values
+# Check if SO_NOSIGPIPE exists
+check_symbol_exists(SO_NOSIGPIPE "sys/socket.h" HAVE_SO_NOSIGPIPE)
+
+# Check if MSG_NOSIGNAL exists
+check_symbol_exists(MSG_NOSIGNAL "sys/socket.h" HAVE_MSG_NOSIGNAL)
+
 if("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
   set(SUPPORT_ABSTRACT_SOCKET_NAMES TRUE)
   list(APPEND STUMPLESS_SOURCES ${PROJECT_SOURCE_DIR}/src/config/abstract_socket_names_supported.c)
@@ -836,7 +847,9 @@ add_function_test(current_target
 )
 
 add_function_test(element
-  SOURCES test/function/element.cpp
+  SOURCES
+    test/function/element.cpp
+    $<TARGET_OBJECTS:test_helper_fixture>
 )
 
 add_function_test(element_leak
@@ -1047,7 +1060,9 @@ add_function_test(memory
 )
 
 add_function_test(param
-  SOURCES ${PROJECT_SOURCE_DIR}/test/function/param.cpp
+  SOURCES
+    ${PROJECT_SOURCE_DIR}/test/function/param.cpp
+    $<TARGET_OBJECTS:test_helper_fixture>
 )
 
 add_function_test(perror
@@ -1153,6 +1168,12 @@ add_performance_test(entry
 add_performance_test(function
   SOURCES
     ${PROJECT_SOURCE_DIR}/test/performance/target/function.cpp
+    $<TARGET_OBJECTS:test_helper_fixture>
+)
+
+add_performance_test(buffer
+  SOURCES
+    ${PROJECT_SOURCE_DIR}/test/performance/target/buffer.cpp
     $<TARGET_OBJECTS:test_helper_fixture>
 )
 

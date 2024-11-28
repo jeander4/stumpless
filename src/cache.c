@@ -67,7 +67,7 @@ add_page( struct cache *c ) {
   char **new_pages;
   char *new_page;
 
-  new_pages = realloc_mem( c->pages, sizeof( char * ) * ( c->page_count + 1 ) );
+  new_pages = realloc_array( c->pages, ( c->page_count + 1 ), sizeof( char * ) );
   if( !new_pages ) {
     return -1;
   }

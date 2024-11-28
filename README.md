@@ -12,7 +12,7 @@
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.1-ff69b4.svg)](https://github.com/goatshriek/stumpless/blob/latest/docs/CODE_OF_CONDUCT.md)
 
 
-[简体中文](./l10n/zh-cn/自述.md)
+[한국어](./l10n/ko-kr/README.md) | [简体中文](./l10n/zh-cn/自述.md)
 
 
 [Key Features](#key-features) |
@@ -33,7 +33,7 @@ Stumpless has lots of features that make logging in C fast and easy:
    🇯🇵 🇰🇪 🇰🇷 🇵🇱 🇸🇰 🇱🇰 🇸🇪 🇹🇷 🇺🇸
    ([add yours!](https://github.com/goatshriek/stumpless/blob/latest/docs/localization.md))
  * easy-access
-   [documentation](https://goatshriek.github.io/stumpless/docs/c/latest/index.html),
+   [documentation](https://goatshriek.github.io/stumpless/docs/c/latest/),
    [examples](https://github.com/goatshriek/stumpless/tree/latest/docs/examples),
    and [support](https://gitter.im/stumpless/community).
 
@@ -60,8 +60,7 @@ with your request and we'll work it into our
 
 ## Quick Build and Install
 Stumpless only requires cmake and a cmake-supported build toolchain (like GCC
-or Visual Studio) to build. For a system using the standard GNU make toolchain,
-you can simply do:
+or Visual Studio) to build.
 
 ```sh
 # cloning the latest version of the source tree
@@ -75,10 +74,10 @@ cd build
 cmake ../stumpless
 
 # building stumpless (with 4 threads - adjust as desired)
-make -j 4 all
+cmake --build . --parallel 4
 
 # install the library (you probably need sudo to do this)
-sudo make install
+sudo cmake --install .
 ```
 
 Check out the [Installation Instructions](INSTALL.md) for more detail on

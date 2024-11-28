@@ -5,8 +5,8 @@ if(MSVC)
   # platform-dependent code, such as the _s functions, just for tests
   set(function_test_compile_flags "-D_CRT_SECURE_NO_WARNINGS -DGTEST_LINKED_AS_SHARED_LIBRARY=1")
 else()
-  set(function_test_compile_flags "-std=gnu++14 -DGTEST_LINKED_AS_SHARED_LIBRARY=1")
-  set(performance_test_compile_flags "-std=gnu++14")
+  set(function_test_compile_flags "-std=gnu++17 -DGTEST_LINKED_AS_SHARED_LIBRARY=1")
+  set(performance_test_compile_flags "-std=gnu++17")
 endif(MSVC)
 set(fuzz_test_compile_flags "-g -O1 -fsanitize=fuzzer,address")
 
@@ -34,6 +34,12 @@ function(private_add_function_test)
     libgtestmain
     ${FUNCTION_TEST_ARG_LIBRARIES}
   )
+
+  if("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
+    target_link_libraries(function-test-${FUNCTION_TEST_ARG_NAME}
+      stdc++fs
+    )
+  endif()
 
   target_include_directories(function-test-${FUNCTION_TEST_ARG_NAME}
     PRIVATE
@@ -300,6 +306,12 @@ set_target_properties(test_helper_fixture
 )
 
 add_dependencies(test_helper_fixture libgtest)
+
+if("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
+  target_link_libraries(test_helper_fixture
+    stdc++fs
+  )
+endif()
 
 target_include_directories(test_helper_fixture
     PRIVATE

@@ -269,7 +269,7 @@ namespace {
 #else
       save_stderr = dup(save_stderr);
 #endif
-      freopen(filename, "a+", stderr);
+      ASSERT_NOT_NULL( freopen( filename, "a+", stderr ));
 
       stumpless_add_log_str(target, i, stumpless_get_severity_string((enum stumpless_severity)i)); 
       
@@ -342,7 +342,7 @@ namespace {
 #else
       save_stdout = dup(save_stdout);
 #endif
-      freopen(filename, "a+", stdout);
+      ASSERT_NOT_NULL( freopen( filename, "a+", stdout ));
 
       stumpless_add_log_str(target, i, stumpless_get_severity_string((enum stumpless_severity)i)); 
 

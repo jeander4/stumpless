@@ -255,3 +255,4 @@ EXPORTS
 ; added in v3.0.0
   stumpless_get_free                            @231
   stumpless_get_realloc                         @232
+  stumpless_get_priority_string                 @233
