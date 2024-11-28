@@ -689,4 +689,22 @@ vstumplog_trace( int priority,
 }                               /* extern "C" */
 #  endif
 
+/*
+ * Returns RFC 5424 origin structured data element that provides information about the originator of the log message.
+ * see: https://datatracker.ietf.org/doc/html/rfc5424#section-7.2
+ *
+ * It used by stumpless' syslog and vsyslogs replacement - stumplog, and vstumplog.
+ *
+ * @return stumpless_element with origin structure
+ * ip - Origin IP address (for now just first address used ipv4 or ipv6)
+ * enterpriseId - Enterprise ID (skipped for now)
+ * software - Software name (stumpless)
+ * swVersion Software version (current version of stumpless)
+ *
+ * @since 2.1.1
+*/
+STUMPLESS_PUBLIC_FUNCTION
+struct stumpless_element*
+get_origin_struct_instance( void );
+
 #endif                          /* __STUMPLESS_LOG_H */
