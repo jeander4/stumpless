@@ -51,7 +51,7 @@ stumpless_get_facility_enum( const char *facility_string ) {
 
 enum stumpless_facility
 stumpless_get_facility_enum_from_buffer(const char *facility_buffer, size_t facility_buffer_length) {
-  VALIDATE_ARG_NOT_NULL_INT_RETURN(facility_buffer);
+    VALIDATE_ARG_NOT_NULL_INT_RETURN(facility_buffer);
 
  size_t facility_bound;
  size_t i;
