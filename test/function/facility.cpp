@@ -63,7 +63,7 @@ namespace {
   }
 
 
-  TEST( GetFacilityEnum, LowercaseFacility ) {
+    TEST( GetFacilityEnum, LowercaseFacility ) {
     int result;
 
     result = stumpless_get_facility_enum( "user" );
@@ -134,7 +134,7 @@ TEST(GetFacilityString, InvalidFacility) {
   }
 
   TEST(GetFacilityEnum, NullFacilityString) {
-     enum stumpless_facility facility = stumpless_get_facility_enum(NULL);
+    enum stumpless_facility facility = stumpless_get_facility_enum(NULL);
 
     // Check that the function returns -1 for NULL input
     EXPECT_EQ(facility, -STUMPLESS_ARGUMENT_EMPTY);
@@ -197,13 +197,12 @@ TEST(GetFacilityString, InvalidFacility) {
     for (const auto &test_case : test_cases) {
       int result = stumpless_get_facility_enum_from_buffer(
           test_case.facility_buffer, strlen(test_case.facility_buffer));
-      EXPECT_EQ(result, test_case.expected_enum
+      EXPECT_EQ(result, test_case.expected_enum);
       EXPECT_FALSE(stumpless_has_error());
     }
   }
 
-
-TEST(GetFacilityEnumFromBuffer, InvalidFacility) {
+  TEST(GetFacilityEnumFromBuffer, InvalidFacility) {
     const char *invalid_facility = "INVALID";
 
     // Call the function with an invalid facility
@@ -217,5 +216,6 @@ TEST(GetFacilityEnumFromBuffer, InvalidFacility) {
     EXPECT_TRUE(stumpless_has_error());
     EXPECT_ERROR_ID_EQ(STUMPLESS_INVALID_FACILITY);
   }
+
 
 }
