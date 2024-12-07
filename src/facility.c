@@ -23,6 +23,7 @@
 #include <private/validate.h>
 #include "private/strhelper.h"
 #include "private/error.h"
+#include <stumpless/error.h>
 
 
 static char *facility_enum_to_string[] = {
