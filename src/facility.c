@@ -20,7 +20,11 @@
 #include <string.h>
 #include <stumpless/facility.h>
 #include "private/facility.h"
+#include <private/validate.h>
 #include "private/strhelper.h"
+#include "private/error.h"
+#include <stumpless/error.h>
+
 
 static char *facility_enum_to_string[] = {
   STUMPLESS_FOREACH_FACILITY( GENERATE_STRING )
@@ -31,16 +35,25 @@ stumpless_get_facility_string( enum stumpless_facility facility ) {
   if ( !facility_is_invalid( facility ) ) {
     return facility_enum_to_string[facility >> 3];
   }
+    raise_invalid_facility( facility );
   return "NO_SUCH_FACILITY";
 }
 
 enum stumpless_facility
 stumpless_get_facility_enum( const char *facility_string ) {
-  return stumpless_get_facility_enum_from_buffer(facility_string, strlen(facility_string));
+    VALIDATE_ARG_NOT_NULL_INT_RETURN(facility_string);
+
+    enum stumpless_facility facility = stumpless_get_facility_enum_from_buffer(facility_string, strlen(facility_string));
+    if (facility == -1) {
+        raise_invalid_facility(STUMPLESS_INVALID_ENCODING);
+    }
+  return facility;
 }
 
 enum stumpless_facility
 stumpless_get_facility_enum_from_buffer(const char *facility_buffer, size_t facility_buffer_length) {
+    VALIDATE_ARG_NOT_NULL_INT_RETURN(facility_buffer);
+
  size_t facility_bound;
  size_t i;
  const int str_offset = 19; // to ommit "STUMPLESS_FACILITY_"
@@ -63,8 +76,8 @@ stumpless_get_facility_enum_from_buffer(const char *facility_buffer, size_t faci
   if( strncasecmp_custom( facility_buffer, "AUTHPRIV", facility_buffer_length ) == 0 ) {
   return STUMPLESS_FACILITY_AUTH2_VALUE;
  }
-
- return -1;
+    raise_invalid_facility(STUMPLESS_INVALID_FACILITY);
+    return -1;
 }
 
 /* private functions */

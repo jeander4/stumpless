@@ -19,6 +19,8 @@
 #include <gtest/gtest.h>
 #include <stumpless.h>
 #include "test/helper/assert.hpp"
+#include <stddef.h>
+#include <string.h>
 
 namespace {
 
@@ -59,7 +61,8 @@ namespace {
     STUMPLESS_FOREACH_FACILITY( CHECK_FACILITY_ENUM )
   }
 
-  TEST( GetFacilityEnum, LowercaseFacility ) {
+
+    TEST( GetFacilityEnum, LowercaseFacility ) {
     int result;
 
     result = stumpless_get_facility_enum( "user" );
@@ -109,11 +112,109 @@ namespace {
     EXPECT_NO_ERROR;
   }
 
+
   TEST( GetFacilityEnum, NoSuchFacility ) {
     int result;
 
     result = stumpless_get_facility_enum( "an_invalid_facility" );
     EXPECT_EQ( result, -1 );
+    EXPECT_ERROR_ID_EQ(STUMPLESS_INVALID_FACILITY);
   }
+
+
+TEST(GetFacilityString, InvalidFacility) {
+    const char *result;
+    stumpless_facility invalid_facility = static_cast<stumpless_facility>(999); // Explicit cast
+
+    // Check that the fallback string is returned
+    result = stumpless_get_facility_string(invalid_facility);
+    EXPECT_STREQ(result, "NO_SUCH_FACILITY");
+    EXPECT_ERROR_ID_EQ(STUMPLESS_INVALID_FACILITY);
+  }
+
+  TEST(GetFacilityEnum, NullFacilityString) {
+    enum stumpless_facility facility = stumpless_get_facility_enum(NULL);
+
+    // Check that the function returns -1 for NULL input
+    EXPECT_EQ(facility, -STUMPLESS_ARGUMENT_EMPTY);
+    EXPECT_ERROR_ID_EQ(STUMPLESS_ARGUMENT_EMPTY);
+  }
+
+  TEST(GetFacilityEnumFromBuffer, NullFacilityBuffer) {
+    // Call the function with a NULL buffer
+    enum stumpless_facility facility = stumpless_get_facility_enum_from_buffer(NULL, 0);
+
+    // Verify the function returns -1 for NULL input
+    EXPECT_EQ(facility, -1);
+    EXPECT_ERROR_ID_EQ(STUMPLESS_ARGUMENT_EMPTY);
+  }
+
+  TEST(GetFacilityEnum, InvalidFacilityString) {
+    int result;
+
+    // Call the function with an invalid facility string
+    result = stumpless_get_facility_enum("INVALID");
+
+    // Validate that the function returns -1 for invalid input
+    EXPECT_EQ(result, -1);
+    EXPECT_ERROR_ID_EQ(STUMPLESS_INVALID_FACILITY);
+  }
+
+  TEST(GetFacilityEnumFromBuffer, InvalidFacilityBuffer) {
+    int result;
+
+    // Call the function with an invalid facility buffer
+    result = stumpless_get_facility_enum_from_buffer("INVALID", strlen("INVALID"));
+
+    // Validate that the function returns -1 for invalid input
+    EXPECT_EQ(result, -1);
+    EXPECT_ERROR_ID_EQ(STUMPLESS_INVALID_FACILITY);
+  }
+
+  TEST(GetFacilityEnumFromBuffer, ValidFacilities) {
+    struct FacilityBufferTestCase {
+      const char *facility_buffer;
+      int expected_enum;
+    } test_cases[] = {
+      {"USER", STUMPLESS_FACILITY_USER},
+      {"MAIL", STUMPLESS_FACILITY_MAIL},
+      {"DAEMON", STUMPLESS_FACILITY_DAEMON},
+      {"AUTH", STUMPLESS_FACILITY_AUTH},
+      {"SECURITY", STUMPLESS_FACILITY_AUTH},
+      {"SYSLOG", STUMPLESS_FACILITY_SYSLOG},
+      {"LPR", STUMPLESS_FACILITY_LPR},
+      {"NEWS", STUMPLESS_FACILITY_NEWS},
+      {"UUCP", STUMPLESS_FACILITY_UUCP},
+      {"CRON", STUMPLESS_FACILITY_CRON},
+      {"AUTHPRIV", STUMPLESS_FACILITY_AUTH2},
+      {"FTP", STUMPLESS_FACILITY_FTP},
+      {"NTP", STUMPLESS_FACILITY_NTP},
+      {"AUDIT", STUMPLESS_FACILITY_AUDIT},
+      {"ALERT", STUMPLESS_FACILITY_ALERT},
+    };
+
+    for (const auto &test_case : test_cases) {
+      int result = stumpless_get_facility_enum_from_buffer(
+          test_case.facility_buffer, strlen(test_case.facility_buffer));
+      EXPECT_EQ(result, test_case.expected_enum);
+      EXPECT_TRUE(stumpless_has_error());
+    }
+  }
+
+  TEST(GetFacilityEnumFromBuffer, InvalidFacility) {
+    const char *invalid_facility = "INVALID";
+
+    // Call the function with an invalid facility
+    int result = stumpless_get_facility_enum_from_buffer(
+        invalid_facility, strlen(invalid_facility));
+
+    // Verify the function returns -1 for invalid input
+    EXPECT_EQ(result, -1);
+
+    // Verify the correct error is set
+    EXPECT_TRUE(stumpless_has_error());
+    EXPECT_ERROR_ID_EQ(STUMPLESS_INVALID_FACILITY);
+  }
+
 
 }

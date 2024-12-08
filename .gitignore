@@ -10,6 +10,7 @@ docs/html/*
 *.swp
 .vs/*
 .vscode/*
+.idea/*
 CMakeSettings.json
 **/.DS_Store
 
