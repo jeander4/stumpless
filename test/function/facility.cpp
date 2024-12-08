@@ -21,7 +21,6 @@
 #include "test/helper/assert.hpp"
 #include <stddef.h>
 #include <string.h>
-#include <private/error.h>
 
 namespace {
 
@@ -198,7 +197,7 @@ TEST(GetFacilityString, InvalidFacility) {
       int result = stumpless_get_facility_enum_from_buffer(
           test_case.facility_buffer, strlen(test_case.facility_buffer));
       EXPECT_EQ(result, test_case.expected_enum);
-      EXPECT_FALSE(stumpless_has_error());
+      EXPECT_TRUE(stumpless_has_error());
     }
   }
 
